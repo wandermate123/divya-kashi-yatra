@@ -1,4 +1,5 @@
 import crypto from "crypto";
+import Razorpay from "razorpay";
 
 export function verifyPaymentSignature(orderId: string, paymentId: string, signature: string) {
   const secret = process.env.RAZORPAY_KEY_SECRET;
@@ -12,12 +13,16 @@ export function verifyPaymentSignature(orderId: string, paymentId: string, signa
   }
 }
 
+/**
+ * Validates `X-Razorpay-Signature` using the secret from the Razorpay **Webhook** setup
+ * (Dashboard → Webhooks → your endpoint secret). This is not the same as `RAZORPAY_KEY_SECRET`.
+ * Uses the same HMAC-SHA256 logic as the official Razorpay Node SDK.
+ */
 export function verifyWebhookSignature(rawBody: string, signatureHeader: string | null) {
-  const whSecret = process.env.RAZORPAY_WEBHOOK_SECRET;
-  if (!whSecret || !signatureHeader) return false;
-  const expected = crypto.createHmac("sha256", whSecret).update(rawBody).digest("hex");
+  const secret = process.env.RAZORPAY_WEBHOOK_SECRET?.trim();
+  if (!secret || !signatureHeader?.trim()) return false;
   try {
-    return crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(signatureHeader));
+    return Razorpay.validateWebhookSignature(rawBody, signatureHeader.trim(), secret);
   } catch {
     return false;
   }

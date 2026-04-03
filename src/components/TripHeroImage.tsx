@@ -14,7 +14,8 @@ export function TripHeroImage() {
       animate={reduce ? undefined : { opacity: 1, clipPath: "inset(0% 0% 0% 0%)" }}
       transition={{ duration: 1.15, ease: [0.16, 1, 0.3, 1] }}
     >
-      <div className="relative aspect-[21/10] min-h-[200px] sm:aspect-[2.35/1] sm:max-h-[min(440px,52vh)]">
+      {/* Hero PNG is 16:9 — use the same aspect so object-cover matches without side crop */}
+      <div className="relative w-full aspect-video">
         <motion.div
           className="absolute inset-0"
           initial={reduce ? false : { scale: 1.08 }}
@@ -32,7 +33,7 @@ export function TripHeroImage() {
         </motion.div>
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[var(--background)] via-[var(--background)]/15 to-transparent sm:via-transparent" />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[var(--background)]/40 via-transparent to-[var(--background)]/40 opacity-70" />
-        <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[var(--background)]/95 to-transparent px-5 pb-5 pt-16 text-left sm:px-8 sm:pb-6">
+        <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[var(--background)]/95 to-transparent px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-14 text-left sm:px-8 sm:pb-6 sm:pt-16">
           <motion.span
             className="font-display text-lg font-medium text-[var(--foreground)] sm:text-xl"
             initial={reduce ? false : { opacity: 0, y: 12 }}
@@ -42,7 +43,7 @@ export function TripHeroImage() {
             {HERO_STOCK_IMAGE.label}
           </motion.span>
           <span className="mt-1 block text-[11px] uppercase tracking-[0.2em] text-[var(--muted)]">
-            Reference imagery · Unsplash
+            Divya Kashi Yatra
           </span>
         </figcaption>
       </div>

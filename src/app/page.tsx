@@ -1,12 +1,13 @@
 import { BookingForm } from "@/components/BookingForm";
 import { HomeShell } from "@/components/home/HomeShell";
+import { MobileStickyCTA } from "@/components/MobileStickyCTA";
 import { TripHeroImage } from "@/components/TripHeroImage";
 import { TripDetails } from "@/components/TripDetails";
 import { Reveal } from "@/components/motion/Reveal";
 
 export default function Home() {
   return (
-    <main className="relative z-10 mx-auto max-w-4xl px-4 py-10 sm:py-14 md:py-16">
+    <main className="relative z-10 mx-auto max-w-4xl pb-28 pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] pt-[max(0.75rem,env(safe-area-inset-top))] md:px-4 md:pb-16 md:py-16">
       <HomeShell>
         <TripHeroImage />
 
@@ -15,7 +16,7 @@ export default function Home() {
         </div>
 
         <Reveal>
-          <section id="book" className="scroll-mt-12" aria-labelledby="booking-heading">
+          <section id="book" className="scroll-mt-6 md:scroll-mt-12" aria-labelledby="booking-heading">
             <div className="section-rule mb-10" />
             <h2
               id="booking-heading"
@@ -39,6 +40,7 @@ export default function Home() {
           </section>
         </Reveal>
       </HomeShell>
+      <MobileStickyCTA />
     </main>
   );
 }

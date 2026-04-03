@@ -144,10 +144,10 @@ export function TripDetails() {
           shared after you book.
         </p>
 
-        <div className="mt-10 space-y-12 border-l border-[var(--border-hover)] pl-8 sm:pl-10">
+        <div className="mt-10 space-y-12 border-l border-[var(--border-hover)] pl-7 sm:pl-10">
           <article className="relative">
             <span
-              className="absolute -left-[2.05rem] top-0 flex h-9 w-9 items-center justify-center rounded-full border border-[var(--accent)]/35 bg-[var(--background-mid)] text-xs font-semibold text-[var(--accent)] sm:-left-[2.55rem]"
+              className="absolute -left-[1.55rem] top-0 flex h-8 w-8 items-center justify-center rounded-full border border-[var(--accent)]/35 bg-[var(--background-mid)] text-xs font-semibold text-[var(--accent)] sm:-left-[2.55rem] sm:h-9 sm:w-9"
               aria-hidden
             >
               0
@@ -162,7 +162,7 @@ export function TripDetails() {
 
           <article className="relative">
             <span
-              className="absolute -left-[2.05rem] top-0 flex h-9 w-9 items-center justify-center rounded-full border border-[var(--accent)]/35 bg-[var(--background-mid)] text-xs font-semibold text-[var(--accent)] sm:-left-[2.55rem]"
+              className="absolute -left-[1.55rem] top-0 flex h-8 w-8 items-center justify-center rounded-full border border-[var(--accent)]/35 bg-[var(--background-mid)] text-xs font-semibold text-[var(--accent)] sm:-left-[2.55rem] sm:h-9 sm:w-9"
               aria-hidden
             >
               1
@@ -183,7 +183,7 @@ export function TripDetails() {
 
           <article className="relative">
             <span
-              className="absolute -left-[2.05rem] top-0 flex h-9 w-9 items-center justify-center rounded-full border border-[var(--accent)]/35 bg-[var(--background-mid)] text-xs font-semibold text-[var(--accent)] sm:-left-[2.55rem]"
+              className="absolute -left-[1.55rem] top-0 flex h-8 w-8 items-center justify-center rounded-full border border-[var(--accent)]/35 bg-[var(--background-mid)] text-xs font-semibold text-[var(--accent)] sm:-left-[2.55rem] sm:h-9 sm:w-9"
               aria-hidden
             >
               2
@@ -265,7 +265,8 @@ export function TripDetails() {
         {/* Page 5 — accommodation */}
         <section aria-labelledby="accommodation-heading" className="scroll-mt-8 rounded-sm card-surface p-6 sm:p-8">
         <figure className="-mx-6 -mt-6 mb-8 overflow-hidden border-b border-[var(--border)] sm:-mx-8 sm:-mt-8">
-          <div className="relative aspect-[21/9] min-h-[180px] sm:min-h-[220px]">
+          {/* Asset is ~3:2 (1024×683) — match aspect so the room isn’t cropped like a 21:9 banner */}
+          <div className="relative aspect-[3/2] w-full min-h-[160px]">
             <Image
               src={ACCOMMODATION_STOCK_IMAGE.src}
               alt={ACCOMMODATION_STOCK_IMAGE.alt}
@@ -276,7 +277,7 @@ export function TripDetails() {
             />
           </div>
           <figcaption className="px-4 py-3 text-xs text-[var(--muted)] sm:px-8">
-            {ACCOMMODATION_STOCK_IMAGE.label} · Stock imagery; properties named below are the actual options we work
+            {ACCOMMODATION_STOCK_IMAGE.label} · Representative room; properties named below are the actual options we work
             with.
           </figcaption>
         </figure>

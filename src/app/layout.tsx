@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Outfit } from "next/font/google";
 import "./globals.css";
 
@@ -18,7 +18,16 @@ export const metadata: Metadata = {
   title: "Divya Kashi Yatra — WanderMate | Upcoming departures from NCR",
   description:
     "Log off Friday, reset in Kashi. Divya Kashi Yatra runs most weekends and long vacations year-round from NCR. Upcoming batches confirmed on WhatsApp. Kashi Vishwanath, ghats, Ganga Aarti, Sarnath. From ₹8,999.",
+  appleWebApp: { capable: true, statusBarStyle: "black-translucent" },
+  formatDetection: { telephone: false },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
   themeColor: "#001533",
+  colorScheme: "dark",
 };
 
 export default function RootLayout({
@@ -28,7 +37,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${sans.variable} ${display.variable}`}>
-      <body className="min-h-screen antialiased" suppressHydrationWarning>
+      <body
+        className="min-h-screen touch-manipulation antialiased [-webkit-tap-highlight-color:transparent]"
+        suppressHydrationWarning
+      >
         {children}
       </body>
     </html>

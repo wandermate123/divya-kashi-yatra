@@ -20,6 +20,16 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    scroll-padding-top: 0.75rem;
+    scroll-padding-bottom: 5.5rem;
+  }
+
+  @media (min-width: 768px) {
+    html {
+      scroll-padding-bottom: 0;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -81,9 +91,20 @@
   }
 
   .input-luxury {
-    @apply w-full rounded-md border px-4 py-3 text-[var(--foreground)] outline-none transition-[box-shadow,border-color,background-color] duration-300;
+    @apply w-full rounded-md border px-4 text-[var(--foreground)] outline-none transition-[box-shadow,border-color,background-color] duration-300;
     border-color: var(--border);
     background: rgba(0, 21, 51, 0.45);
+    min-height: 3rem;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    font-size: 1rem;
+    line-height: 1.4;
+  }
+
+  @media (min-width: 640px) {
+    .input-luxury {
+      min-height: 2.875rem;
+    }
   }
 
   .input-luxury:focus {
@@ -92,10 +113,19 @@
   }
 
   .btn-primary {
-    @apply rounded-md px-6 py-3 text-sm font-medium tracking-wide transition-[transform,box-shadow,background-color,color] duration-300;
+    @apply inline-flex items-center justify-center rounded-md px-6 text-sm font-medium tracking-wide transition-[transform,box-shadow,background-color,color] duration-300;
+    min-height: 3rem;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
     background: linear-gradient(165deg, var(--accent-strong), #ffffff);
     color: var(--background);
     box-shadow: 0 1px 0 rgba(255, 255, 255, 0.35) inset, 0 8px 32px -8px rgba(255, 255, 255, 0.2);
+  }
+
+  @media (min-width: 640px) {
+    .btn-primary {
+      min-height: 2.75rem;
+    }
   }
 
   .btn-primary:hover:not(:disabled) {
@@ -109,10 +139,29 @@
   }
 
   .btn-ghost {
-    @apply rounded-md border px-5 py-2.5 text-sm font-medium transition-[border-color,background-color,color,transform] duration-300;
+    @apply inline-flex items-center justify-center rounded-md border px-5 text-sm font-medium transition-[border-color,background-color,color,transform] duration-300;
+    min-height: 3rem;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
     border-color: var(--border);
     color: var(--foreground);
     background: transparent;
+  }
+
+  @media (min-width: 640px) {
+    .btn-ghost {
+      min-height: 2.75rem;
+    }
+  }
+
+  /* Horizontal nav on mobile: swipe without visible scrollbar */
+  .mobile-nav-scroll {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .mobile-nav-scroll::-webkit-scrollbar {
+    display: none;
   }
 
   .btn-ghost:hover {

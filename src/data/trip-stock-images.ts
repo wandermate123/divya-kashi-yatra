@@ -8,15 +8,15 @@ export type TripStockImage = {
 };
 
 export const HERO_STOCK_IMAGE: TripStockImage = {
-  src: "https://images.unsplash.com/photo-1768123796352-93d9cb484d3b?auto=format&fit=crop&w=2000&q=85",
-  alt: "Ghats along the Ganges in Varanasi with boats on the river",
-  label: "Ganga ghats, Varanasi",
+  src: "/images/hero-primary.png",
+  alt: "Divya Kashi Yatra team grouped together in front of a weathered blue wall",
+  label: "The people behind your Kashi yatra",
 };
 
-/** Premium stay mood (stock — illustrative; actual hotels listed below). */
+/** Partner stay — illustrative twin room; hotels listed on page are actual options. */
 export const ACCOMMODATION_STOCK_IMAGE: TripStockImage = {
-  src: "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1600&q=85",
-  alt: "Elegant hotel room with tidy bed and warm lighting",
+  src: "/images/accommodation-primary.png",
+  alt: "Bright twin hotel room with white linens, navy accents, wood headboard, and window view",
   label: "Premium 3★ / 4★ style stay in Varanasi",
 };
 

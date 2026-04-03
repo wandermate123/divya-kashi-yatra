@@ -28,7 +28,7 @@ export function HomeShell({ children }: Props) {
     <>
       <ScrollProgress />
       <div className="relative z-10">
-        <header className="mb-12 px-4 sm:mb-16">
+        <header className="mb-10 px-0 sm:mb-16 sm:px-4">
           <div className="mx-auto max-w-4xl text-center">
             <motion.div
               className="mx-auto flex justify-center"
@@ -60,7 +60,7 @@ export function HomeShell({ children }: Props) {
               Strangers trip on earth · connected in Kashi
             </motion.p>
             <motion.h1
-              className="font-display mt-5 text-balance text-4xl font-medium leading-[1.08] tracking-tight text-[var(--foreground)] sm:text-5xl md:text-[3.25rem]"
+              className="font-display mt-5 text-balance text-3xl font-medium leading-[1.1] tracking-tight text-[var(--foreground)] min-[400px]:text-4xl sm:text-5xl md:text-[3.25rem]"
               initial={reduce ? false : { opacity: 0, y: 20 }}
               animate={reduce ? undefined : { opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
@@ -88,7 +88,7 @@ export function HomeShell({ children }: Props) {
             </motion.p>
 
             <motion.nav
-              className="mt-10 flex flex-wrap items-center justify-center gap-2 sm:gap-2.5"
+              className="mobile-nav-scroll mt-8 flex snap-x snap-mandatory gap-2 overflow-x-auto overflow-y-hidden px-1 py-1 [-webkit-overflow-scrolling:touch] sm:mt-10 sm:flex-wrap sm:justify-center sm:overflow-visible sm:px-0 sm:py-0"
               aria-label="Page sections"
               initial={reduce ? false : { opacity: 0 }}
               animate={reduce ? undefined : { opacity: 1 }}
@@ -100,8 +100,8 @@ export function HomeShell({ children }: Props) {
                   href={item.href}
                   className={
                     item.primary === true
-                      ? "btn-primary text-xs sm:text-sm"
-                      : "rounded-full border border-[var(--border)] bg-[var(--accent-subtle)] px-3 py-2 text-xs text-[var(--foreground)] backdrop-blur-sm transition-colors duration-300 hover:border-[var(--border-hover)] hover:bg-[rgba(255,255,255,0.12)] sm:px-4 sm:text-sm"
+                      ? "btn-primary shrink-0 snap-start text-xs sm:text-sm"
+                      : "inline-flex min-h-11 shrink-0 snap-start items-center justify-center rounded-full border border-[var(--border)] bg-[var(--accent-subtle)] px-4 py-2.5 text-xs text-[var(--foreground)] backdrop-blur-sm transition-colors duration-300 hover:border-[var(--border-hover)] hover:bg-[rgba(255,255,255,0.12)] sm:min-h-0 sm:px-4 sm:text-sm"
                   }
                   whileHover={reduce ? undefined : { y: -2 }}
                   whileTap={reduce ? undefined : { scale: 0.98 }}

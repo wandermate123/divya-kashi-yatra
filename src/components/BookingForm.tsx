@@ -171,7 +171,7 @@ export function BookingForm() {
   if (successBookingId) {
     return (
       <div
-        className="card-surface rounded-sm p-8 shadow-[0_32px_90px_-40px_rgba(0,0,0,0.9)]"
+        className="card-surface rounded-sm p-5 shadow-[0_32px_90px_-40px_rgba(0,0,0,0.9)] sm:p-8"
         role="status"
       >
         <h2 className="font-display text-2xl font-medium text-[var(--foreground)]">
@@ -186,8 +186,11 @@ export function BookingForm() {
   }
 
   return (
-    <div className="card-surface rounded-sm p-6 shadow-[0_32px_90px_-40px_rgba(0,0,0,0.9)] sm:p-8">
-      <nav aria-label="Progress" className="mb-8 flex flex-wrap gap-2">
+    <div className="card-surface rounded-sm p-4 shadow-[0_32px_90px_-40px_rgba(0,0,0,0.9)] sm:p-8">
+      <nav
+        aria-label="Progress"
+        className="mobile-nav-scroll mb-6 flex snap-x snap-mandatory gap-2 overflow-x-auto overflow-y-hidden pb-1 [-webkit-overflow-scrolling:touch] sm:mb-8 sm:flex-wrap sm:overflow-visible"
+      >
         {STEPS.map((label, i) => {
           const active = i === step;
           const done = i < step;
@@ -196,7 +199,7 @@ export function BookingForm() {
               key={label}
               type="button"
               onClick={() => setStep(i)}
-              className={`rounded-full px-3 py-1.5 text-xs font-medium transition-[background-color,color,box-shadow,transform] duration-300 sm:text-sm ${
+              className={`shrink-0 snap-start rounded-full px-4 py-2.5 text-left text-xs font-medium transition-[background-color,color,box-shadow,transform] duration-300 sm:text-sm ${
                 active
                   ? "bg-[linear-gradient(165deg,var(--accent-strong),#ffffff)] text-[#001533] shadow-[0_8px_24px_-12px_rgba(255,255,255,0.22)]"
                   : done
@@ -273,12 +276,12 @@ export function BookingForm() {
               required
             />
           </div>
-          <div className="sm:col-span-2 flex justify-end pt-2">
+          <div className="sm:col-span-2 flex flex-col gap-3 pt-2 sm:flex-row sm:justify-end">
             <button
               type="button"
               disabled={!step0Valid}
               onClick={() => setStep(1)}
-              className="btn-primary"
+              className="btn-primary w-full sm:w-auto sm:min-w-[12rem]"
             >
               Continue
             </button>
@@ -336,7 +339,7 @@ export function BookingForm() {
             <select
               id="pickup"
               aria-labelledby="pickup-label"
-              className="input-luxury mt-2 max-w-md"
+              className="input-luxury mt-2 w-full sm:max-w-md"
               value={pickupKey}
               onChange={(e) => setPickupKey(e.target.value)}
               required
@@ -352,11 +355,11 @@ export function BookingForm() {
               Boarding / departure pickup for this trip (NCR).
             </p>
           </div>
-          <div className="sm:col-span-2 flex flex-wrap justify-between gap-3 pt-2">
+          <div className="sm:col-span-2 flex flex-col-reverse gap-3 pt-2 sm:flex-row sm:flex-wrap sm:justify-between">
             <button
               type="button"
               onClick={() => setStep(0)}
-              className="btn-ghost"
+              className="btn-ghost w-full sm:w-auto"
             >
               Back
             </button>
@@ -364,7 +367,7 @@ export function BookingForm() {
               type="button"
               disabled={!step1Valid}
               onClick={() => setStep(2)}
-              className="btn-primary"
+              className="btn-primary w-full sm:w-auto sm:min-w-[12rem]"
             >
               Review
             </button>
@@ -424,11 +427,11 @@ export function BookingForm() {
               </div>
             </div>
           </div>
-          <div className="flex flex-wrap justify-between gap-3">
+          <div className="flex flex-col-reverse gap-3 sm:flex-row sm:flex-wrap sm:justify-between">
             <button
               type="button"
               onClick={() => setStep(1)}
-              className="btn-ghost"
+              className="btn-ghost w-full sm:w-auto"
             >
               Back
             </button>
@@ -436,7 +439,7 @@ export function BookingForm() {
               type="button"
               disabled={!canPay}
               onClick={() => void startPayment()}
-              className="btn-primary min-w-[200px]"
+              className="btn-primary w-full min-w-0 sm:min-w-[200px] sm:w-auto"
             >
               {paying ? "Opening checkout…" : `Pay ${formatINRFromPaise(amounts.advancePaise)}`}
             </button>
