@@ -1,0 +1,45 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// Reservation for Divya Kashi Yatra — advance payment recorded after verified Razorpay payment.
+model Booking {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  fullName      String
+  email         String
+  phone         String
+  /// Optional; reserved if you add ID collection later (e.g. after booking).
+  idDocumentUrl String?
+
+  travelerCount Int
+  batchKey      String
+  batchLabel    String
+
+  /// e.g. delhi | gurgaon | noida
+  pickupKey   String
+  pickupLabel String
+
+  /// Amount charged as advance in paisa (₹3,999 * travelers = 399_900 * travelerCount).
+  advancePaidPaise Int
+  /// Full package due in paisa per booking (₹8,999 * travelers).
+  totalPackagePaise Int
+  /// Remaining balance after advance (totalPackagePaise - advancePaidPaise).
+  balancePaise Int
+
+  paymentStatus String @default("pending_payment")
+
+  razorpayOrderId   String?
+  razorpayPaymentId String? @unique
+
+  @@index([email])
+  @@index([razorpayOrderId])
+  @@index([paymentStatus])
+}

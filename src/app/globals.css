@@ -1,0 +1,141 @@
+@import "tailwindcss";
+
+/* WanderMate logo: deep navy + white */
+:root {
+  --background: #001533;
+  --background-mid: #001f42;
+  --foreground: #ffffff;
+  --muted: #9eb0c8;
+  --accent: #ffffff;
+  --accent-strong: #f4f7fb;
+  --accent-subtle: rgba(255, 255, 255, 0.08);
+  --card: rgba(255, 255, 255, 0.06);
+  --border: rgba(255, 255, 255, 0.12);
+  --border-hover: rgba(255, 255, 255, 0.28);
+  --ring: rgba(255, 255, 255, 0.45);
+  --font-display: "Cormorant Garamond", ui-serif, Georgia, serif;
+  --font-sans: "Outfit", system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  ::selection {
+    background: rgba(255, 255, 255, 0.22);
+    color: var(--background);
+  }
+
+  body {
+    color: var(--foreground);
+    background-color: var(--background);
+    font-family: var(--font-sans), system-ui, sans-serif;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    min-height: 100vh;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 50;
+    opacity: 0.04;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background: radial-gradient(ellipse 80% 55% at 50% -25%, rgba(120, 160, 220, 0.14) 0%, transparent 52%),
+      radial-gradient(ellipse 50% 40% at 100% 50%, rgba(80, 120, 200, 0.08) 0%, transparent 45%),
+      radial-gradient(ellipse 45% 45% at 0% 85%, rgba(60, 100, 180, 0.07) 0%, transparent 45%);
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: var(--font-display), ui-serif, Georgia, serif;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .border-gradient-gold {
+    border: 1px solid transparent;
+    background: linear-gradient(var(--card), var(--card)) padding-box,
+      linear-gradient(135deg, rgba(255, 255, 255, 0.38), rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.22))
+        border-box;
+  }
+
+  .input-luxury {
+    @apply w-full rounded-md border px-4 py-3 text-[var(--foreground)] outline-none transition-[box-shadow,border-color,background-color] duration-300;
+    border-color: var(--border);
+    background: rgba(0, 21, 51, 0.45);
+  }
+
+  .input-luxury:focus {
+    border-color: var(--border-hover);
+    box-shadow: 0 0 0 1px var(--ring), 0 12px 40px -20px rgba(0, 0, 0, 0.45);
+  }
+
+  .btn-primary {
+    @apply rounded-md px-6 py-3 text-sm font-medium tracking-wide transition-[transform,box-shadow,background-color,color] duration-300;
+    background: linear-gradient(165deg, var(--accent-strong), #ffffff);
+    color: var(--background);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.35) inset, 0 8px 32px -8px rgba(255, 255, 255, 0.2);
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.45) inset, 0 12px 40px -10px rgba(255, 255, 255, 0.28);
+  }
+
+  .btn-primary:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .btn-ghost {
+    @apply rounded-md border px-5 py-2.5 text-sm font-medium transition-[border-color,background-color,color,transform] duration-300;
+    border-color: var(--border);
+    color: var(--foreground);
+    background: transparent;
+  }
+
+  .btn-ghost:hover {
+    border-color: var(--border-hover);
+    background: var(--accent-subtle);
+  }
+
+  .card-surface {
+    background: var(--card);
+    border: 1px solid var(--border);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  .section-rule {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border-hover), transparent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .motion-safe-only {
+    animation: none !important;
+    transition: none !important;
+  }
+}
