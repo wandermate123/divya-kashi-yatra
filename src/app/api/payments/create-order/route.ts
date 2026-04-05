@@ -14,8 +14,20 @@ import { getRazorpay, getRazorpayKeyId } from "@/lib/razorpay-server";
 
 export const runtime = "nodejs";
 
-function isRazorpaySdkError(e: unknown): e is { statusCode?: number; error?: { description?: string; code?: string } } {
+function isRazorpaySdkError(e: unknown): e is { statusCode?: number; error?: unknown } {
   return typeof e === "object" && e !== null && ("statusCode" in e || "error" in e);
+}
+
+function razorpayErrorDescription(e: { error?: unknown }): string {
+  const err = e.error;
+  if (typeof err === "string") return err;
+  if (err && typeof err === "object") {
+    const o = err as Record<string, unknown>;
+    if (typeof o.description === "string") return o.description;
+    if (typeof o.message === "string") return o.message;
+    if (typeof o.code === "string" && typeof o.description !== "string") return o.code;
+  }
+  return "";
 }
 
 function createOrderErrorResponse(e: unknown) {
@@ -47,6 +59,19 @@ function createOrderErrorResponse(e: unknown) {
         { status: 503 },
       );
     }
+    console.error("[payments/create-order] PrismaClientKnownRequestError:", e.code, e.message, e.meta);
+    return NextResponse.json(
+      { error: `Database error (${e.code}). Please try again or contact support.` },
+      { status: 503 },
+    );
+  }
+
+  if (e instanceof Prisma.PrismaClientUnknownRequestError) {
+    console.error("[payments/create-order] PrismaClientUnknownRequestError:", e.message);
+    return NextResponse.json(
+      { error: "Database query failed. Check Vercel logs and DATABASE_URL. If new deploy: run migrations on Supabase." },
+      { status: 503 },
+    );
   }
 
   if (e instanceof Prisma.PrismaClientInitializationError) {
@@ -69,7 +94,8 @@ function createOrderErrorResponse(e: unknown) {
   }
 
   if (isRazorpaySdkError(e)) {
-    const sc = e.statusCode;
+    const sc = e.statusCode ?? 0;
+    const desc = razorpayErrorDescription(e);
     if (sc === 401 || sc === 403) {
       return NextResponse.json(
         {
@@ -79,13 +105,28 @@ function createOrderErrorResponse(e: unknown) {
         { status: 502 },
       );
     }
-    const desc = e.error && typeof e.error === "object" && "description" in e.error ? String((e.error as { description: string }).description) : "";
-    if (sc === 400 && desc) {
-      return NextResponse.json({ error: `Razorpay: ${desc.slice(0, 200)}` }, { status: 502 });
+    if (desc) {
+      return NextResponse.json({ error: `Razorpay checkout: ${desc.slice(0, 220)}` }, { status: 502 });
+    }
+    return NextResponse.json(
+      { error: `Payment provider returned HTTP ${sc}. Check Razorpay dashboard (Orders API) and Vercel logs.` },
+      { status: 502 },
+    );
+  }
+
+  if (e instanceof SyntaxError) {
+    return NextResponse.json({ error: "Invalid JSON in request body." }, { status: 400 });
+  }
+
+  if (e instanceof Error) {
+    console.error("[payments/create-order] Error:", e.name, e.message);
+    const msg = e.message.slice(0, 220);
+    if (msg.length > 0 && !/secret|password|key_secret/i.test(msg)) {
+      return NextResponse.json({ error: msg }, { status: 502 });
     }
   }
 
-  return NextResponse.json({ error: "Could not create payment order." }, { status: 500 });
+  return NextResponse.json({ error: "Could not create payment order. Check Vercel function logs for details." }, { status: 500 });
 }
 
 type Body = {
@@ -107,7 +148,12 @@ function bad(msg: string, status = 400) {
 
 export async function POST(request: Request) {
   try {
-    const body = (await request.json()) as Body;
+    let body: Body;
+    try {
+      body = (await request.json()) as Body;
+    } catch (parseErr) {
+      return createOrderErrorResponse(parseErr);
+    }
     const fullName = body.fullName?.trim();
     const email = body.email?.trim().toLowerCase();
     const phone = body.phone?.trim();
