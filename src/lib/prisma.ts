@@ -18,11 +18,6 @@ function isSupabaseTransactionPoolerUrl(u: URL): boolean {
   return false;
 }
 
-function isSupabaseHost(hostname: string): boolean {
-  const h = hostname.toLowerCase();
-  return h.endsWith(".supabase.co") || h.includes("pooler.supabase.com");
-}
-
 /** `connection_limit` is for Prisma’s engine, not libpq — node-postgres can mis-handle it and trigger TLS errors (P1011). */
 function stripNonPgUriParams(urlString: string): string {
   try {
@@ -39,11 +34,19 @@ function normalizeSupabasePoolerUrl(trimmed: string): string {
     const u = new URL(trimmed);
     if (!isSupabaseTransactionPoolerUrl(u)) return trimmed;
 
+    const strictTls =
+      process.env.DATABASE_SSL_REJECT_UNAUTHORIZED === "true" ||
+      process.env.DATABASE_SSL_REJECT_UNAUTHORIZED === "1";
+
     const p = u.searchParams;
     if (!p.has("pgbouncer")) p.set("pgbouncer", "true");
-    if (!p.has("sslmode")) p.set("sslmode", "require");
+    /**
+     * node-postgres (non–libpq-compat): sslmode=require becomes `ssl: {}` → strict CA check → P1011 on many hosts.
+     * sslmode=no-verify → encrypted + rejectUnauthorized: false (Supabase / Vercel–safe default).
+     * Strict: DATABASE_SSL_REJECT_UNAUTHORIZED=true → verify-full.
+     */
+    p.set("sslmode", strictTls ? "verify-full" : "no-verify");
     if (!p.has("connect_timeout")) p.set("connect_timeout", "30");
-    // Pool size is set via pg Pool `max`, not the URI (see poolConfigForDatabaseUrl).
 
     u.search = p.toString();
     return u.toString();
@@ -70,22 +73,6 @@ function databaseConnectionString(): string {
 
 function poolConfigForDatabaseUrl(urlString: string): PoolConfig {
   const connectionString = stripNonPgUriParams(urlString);
-  let hostname = "";
-  try {
-    hostname = new URL(connectionString).hostname;
-  } catch {
-    /* use non-supabase defaults */
-  }
-
-  const supabase = isSupabaseHost(hostname);
-  /**
-   * Vercel + node-pg + Supabase pooler often hits Prisma P1011 with strict TLS
-   * (`rejectUnauthorized: true`). Connection is still encrypted; this only skips CA chain
-   * verification. Opt into strict mode: DATABASE_SSL_REJECT_UNAUTHORIZED=true
-   */
-  const strictTls =
-    process.env.DATABASE_SSL_REJECT_UNAUTHORIZED === "true" ||
-    process.env.DATABASE_SSL_REJECT_UNAUTHORIZED === "1";
 
   return {
     connectionString,
@@ -93,11 +80,6 @@ function poolConfigForDatabaseUrl(urlString: string): PoolConfig {
     connectionTimeoutMillis: 30_000,
     idleTimeoutMillis: 10_000,
     allowExitOnIdle: true,
-    ...(supabase
-      ? {
-          ssl: { rejectUnauthorized: strictTls },
-        }
-      : {}),
   };
 }
 
