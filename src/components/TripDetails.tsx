@@ -224,7 +224,7 @@ export function TripDetails() {
             />
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[var(--background)] via-transparent to-transparent lg:bg-gradient-to-r lg:from-transparent lg:via-transparent lg:to-[var(--background)]/85" />
             <p className="absolute bottom-3 left-3 right-3 text-xs text-[var(--muted)] lg:hidden">
-              {LUXURY_TRAVELLER_STOCK_IMAGE.label} · Stock photo
+              {LUXURY_TRAVELLER_STOCK_IMAGE.label}
             </p>
           </div>
           <div className="flex flex-col justify-center p-6 sm:p-8 lg:p-10">
@@ -252,10 +252,10 @@ export function TripDetails() {
                 <span className="text-[var(--accent)]" aria-hidden>
                   ✓
                 </span>
-                Image is <strong className="text-[var(--foreground)]/80">stock</strong>; exact vehicle may vary by batch and fleet
+                Exact vehicle may vary by batch and fleet
               </li>
             </ul>
-            <p className="mt-4 hidden text-xs text-[var(--muted)] lg:block">{LUXURY_TRAVELLER_STOCK_IMAGE.label} · Stock</p>
+            <p className="mt-4 hidden text-xs text-[var(--muted)] lg:block">{LUXURY_TRAVELLER_STOCK_IMAGE.label}</p>
           </div>
         </div>
         </section>
@@ -464,31 +464,6 @@ export function TripDetails() {
           For Delhi NCR: <strong className="text-[var(--foreground)]">₹8,999</strong> per person. Pay{" "}
           <strong className="text-[var(--accent)]">₹3,999</strong> to confirm booking (or use online checkout below).
         </p>
-        <div className="mt-6 rounded-sm border border-[var(--border)] bg-[var(--background-mid)]/60 p-5 text-sm">
-          <h3 className="font-semibold text-[var(--foreground)]">Bank transfer (account details)</h3>
-          <dl className="mt-3 grid gap-2 text-[var(--muted)] sm:grid-cols-2">
-            <div>
-              <dt className="text-xs uppercase tracking-wide text-[var(--muted)]">Bank name</dt>
-              <dd className="text-[var(--foreground)]">Bank of Baroda</dd>
-            </div>
-            <div>
-              <dt className="text-xs uppercase tracking-wide text-[var(--muted)]">Account number</dt>
-              <dd className="font-mono text-[var(--foreground)]">40708100001145</dd>
-            </div>
-            <div>
-              <dt className="text-xs uppercase tracking-wide text-[var(--muted)]">IFSC</dt>
-              <dd className="font-mono text-[var(--foreground)]">BARB0SONARP</dd>
-            </div>
-            <div>
-              <dt className="text-xs uppercase tracking-wide text-[var(--muted)]">Recipient name</dt>
-              <dd className="text-[var(--foreground)]">Ritesh Singh</dd>
-            </div>
-          </dl>
-          <p className="mt-4 text-xs text-[var(--muted)]">
-            After UPI/NEFT, share the reference on WhatsApp or email so we can confirm your seat. QR codes on the
-            printed brochure can also be used where provided.
-          </p>
-        </div>
         </section>
       </Reveal>
 

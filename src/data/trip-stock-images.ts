@@ -1,4 +1,4 @@
-/** Royalty-free stock URLs (Unsplash License) — Varanasi / Kashi / Sarnath themed. */
+/** Trip imagery — hero and accommodation use local assets; gallery and traveller section use remote URLs. */
 
 export type TripStockImage = {
   src: string;
@@ -20,7 +20,7 @@ export const ACCOMMODATION_STOCK_IMAGE: TripStockImage = {
   label: "Premium 3★ / 4★ style stay in Varanasi",
 };
 
-/** Comfortable group road transfer (stock — representative AC tourist coach / traveller class). */
+/** Comfortable group road transfer — representative AC tourist coach / traveller class. */
 export const LUXURY_TRAVELLER_STOCK_IMAGE: TripStockImage = {
   src: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=1600&q=85",
   alt: "Modern air-conditioned coach for group travel",

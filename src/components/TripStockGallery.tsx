@@ -11,17 +11,14 @@ export function TripStockGallery() {
   return (
     <Reveal>
       <section aria-label="Scenes from Varanasi and Sarnath" className="scroll-mt-8">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <h2 className="font-display text-2xl font-medium tracking-tight text-[var(--foreground)] sm:text-3xl">
-              Glimpses of the journey
-            </h2>
-            <p className="mt-2 max-w-xl text-sm leading-relaxed text-[var(--muted)]">
-              Mood frames of the ghats and Sarnath. On departure, our photographer documents the group
-              professionally—every batch leaves with story-grade visuals.
-            </p>
-          </div>
-          <p className="text-[10px] uppercase tracking-[0.28em] text-[var(--muted)] sm:pb-1">Unsplash · stock</p>
+        <div>
+          <h2 className="font-display text-2xl font-medium tracking-tight text-[var(--foreground)] sm:text-3xl">
+            Glimpses of the journey
+          </h2>
+          <p className="mt-2 max-w-xl text-sm leading-relaxed text-[var(--muted)]">
+            Mood frames of the ghats and Sarnath. On departure, our photographer documents the group
+            professionally—every batch leaves with story-grade visuals.
+          </p>
         </div>
         <div className="mt-8 grid gap-5 sm:grid-cols-3">
           {GALLERY_STOCK_IMAGES.map((img, i) => (

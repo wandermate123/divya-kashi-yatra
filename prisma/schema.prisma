@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  /// Supabase on Vercel: Transaction pooler :6543 + ?pgbouncer=true&sslmode=require (and often connection_limit=1).
+  /// Supabase on Vercel: Transaction pooler :6543 + ?pgbouncer=true&sslmode=require&connect_timeout=30 (often +connection_limit=1).
   /// Run `prisma migrate deploy` locally using a session/direct URL when the pooler cannot take advisory locks.
   url      = env("DATABASE_URL")
 }
