@@ -46,10 +46,15 @@ function createOrderErrorResponse(e: unknown) {
   }
 
   if (e instanceof Prisma.PrismaClientInitializationError) {
+    console.error(
+      "[payments/create-order] PrismaClientInitializationError:",
+      e.message,
+      "errorCode" in e ? (e as { errorCode?: string }).errorCode : undefined,
+    );
     return NextResponse.json(
       {
         error:
-          "Database connection failed. In Vercel → Settings → Environment Variables, set DATABASE_URL to your Supabase Transaction pool URI (port 6543). It must include ?pgbouncer=true and usually &sslmode=require. URL-encode special characters in the password. Example ending: …pooler.supabase.com:6543/postgres?pgbouncer=true&sslmode=require&connect_timeout=30",
+          "Database connection failed. In Supabase: Connect → Transaction pooler (port 6543). In Vercel → Environment Variables set DATABASE_URL for Production and redeploy. Use the exact URI (often db.PROJECT_REF.supabase.co:6543 or *.pooler.supabase.com:6543). URL-encode special characters in the password. See Vercel function logs above for Prisma’s detailed error.",
       },
       { status: 503 },
     );
