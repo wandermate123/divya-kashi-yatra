@@ -21,6 +21,10 @@ function isRazorpaySdkError(e: unknown): e is { statusCode?: number; error?: { d
 function createOrderErrorResponse(e: unknown) {
   console.error("[payments/create-order]", e);
 
+  if (e instanceof Error && /DATABASE_URL/.test(e.message)) {
+    return NextResponse.json({ error: e.message }, { status: 503 });
+  }
+
   if (e instanceof Prisma.PrismaClientKnownRequestError) {
     if (["P1000", "P1001", "P1002", "P1003", "P1010", "P1017"].includes(e.code)) {
       return NextResponse.json(
@@ -54,7 +58,7 @@ function createOrderErrorResponse(e: unknown) {
     return NextResponse.json(
       {
         error:
-          "Database connection failed. In Supabase: Connect → Transaction pooler (port 6543). In Vercel → Environment Variables set DATABASE_URL for Production and redeploy. Use the exact URI (often db.PROJECT_REF.supabase.co:6543 or *.pooler.supabase.com:6543). URL-encode special characters in the password. See Vercel function logs above for Prisma’s detailed error.",
+          "Database connection failed. Use Supabase Connect → Transaction (port 6543) for DATABASE_URL. Username must match the URI Supabase shows (postgres vs postgres.PROJECT_REF). Set DIRECT_URL to Session or Direct (port 5432) for prisma/schema. In Vercel set DATABASE_URL (+ DIRECT_URL), redeploy, then check Logs for the Prisma line above.",
       },
       { status: 503 },
     );

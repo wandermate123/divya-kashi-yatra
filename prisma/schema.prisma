@@ -4,9 +4,10 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  /// Supabase on Vercel: Transaction pooler :6543 + ?pgbouncer=true&sslmode=require&connect_timeout=30 (often +connection_limit=1).
-  /// Run `prisma migrate deploy` locally using a session/direct URL when the pooler cannot take advisory locks.
-  url      = env("DATABASE_URL")
+  /// Runtime (Vercel): Supabase Transaction pooler :6543 — see .env.example.
+  url       = env("DATABASE_URL")
+  /// Migrations / Prisma CLI: Session pooler :5432 or direct DB URL from Supabase Connect.
+  directUrl = env("DIRECT_URL")
 }
 
 /// Reservation for Divya Kashi Yatra — advance payment recorded after verified Razorpay payment.

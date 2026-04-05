@@ -1,10 +1,13 @@
+import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "@prisma/client";
 
-const globalForPrisma = globalThis as unknown as { prisma: PrismaClient | undefined };
+const globalForPrisma = globalThis as unknown as {
+  prisma: PrismaClient | undefined;
+};
 
 /**
- * Supabase transaction pooler URLs need extra query params for Prisma (prepared statements / SSL).
- * Transaction mode uses port 6543 — either *.pooler.supabase.com or db.*.supabase.co (dashboard "Transaction").
+ * Supabase transaction pooler URLs need query params for pooled mode + SSL.
+ * Port 6543 — host may be db.*.supabase.co or *.pooler.supabase.com (see Supabase Connect → Transaction).
  */
 function isSupabaseTransactionPoolerUrl(u: URL): boolean {
   const host = u.hostname.toLowerCase();
@@ -32,22 +35,31 @@ function normalizeSupabasePoolerUrl(trimmed: string): string {
   }
 }
 
-/** Trim + normalize pooler URL; avoids failures from spaces or missing query params. */
-function pooledDatabaseUrl(): string | undefined {
+function databaseConnectionString(): string {
   const raw = process.env.DATABASE_URL;
-  if (typeof raw !== "string") return undefined;
+  if (typeof raw !== "string") {
+    throw new Error(
+      "DATABASE_URL is missing. In Vercel → Settings → Environment Variables, add it for Production and redeploy.",
+    );
+  }
   const trimmed = raw.trim();
-  if (!trimmed.length) return undefined;
+  if (!trimmed.length) {
+    throw new Error(
+      "DATABASE_URL is empty. In Vercel → Settings → Environment Variables, set a non-empty value and redeploy.",
+    );
+  }
   return normalizeSupabasePoolerUrl(trimmed);
 }
 
-const databaseUrl = pooledDatabaseUrl();
-
-export const prisma =
-  globalForPrisma.prisma ??
-  new PrismaClient({
-    ...(databaseUrl ? { datasources: { db: { url: databaseUrl } } } : {}),
+function createPrismaClient(): PrismaClient {
+  const connectionString = databaseConnectionString();
+  const adapter = new PrismaPg({ connectionString });
+  return new PrismaClient({
+    adapter,
     log: process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
   });
+}
 
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+/** Reuse one client per serverless instance (warm invocation). */
+export const prisma = globalForPrisma.prisma ?? createPrismaClient();
+globalForPrisma.prisma = prisma;

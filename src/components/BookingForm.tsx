@@ -51,7 +51,7 @@ export function BookingForm() {
   const [ageInput, setAgeInput] = useState("");
   const [genderKey, setGenderKey] = useState("");
   const [termsAccepted, setTermsAccepted] = useState(false);
-  const [travelerCount, setTravelerCount] = useState(1);
+  const [travelerCountInput, setTravelerCountInput] = useState("1");
   const [batchKey, setBatchKey] = useState("");
   const [pickupKey, setPickupKey] = useState("");
   const [paying, setPaying] = useState(false);
@@ -59,7 +59,15 @@ export function BookingForm() {
   const [error, setError] = useState<string | null>(null);
   const [successBookingId, setSuccessBookingId] = useState<string | null>(null);
 
-  const amounts = useMemo(() => computeAmounts(travelerCount), [travelerCount]);
+  const travelerCount = useMemo((): number | null => {
+    const t = travelerCountInput.trim();
+    if (t === "") return null;
+    const n = Number.parseInt(t, 10);
+    if (!Number.isFinite(n)) return null;
+    return n;
+  }, [travelerCountInput]);
+
+  const amounts = useMemo(() => computeAmounts(travelerCount ?? 1), [travelerCount]);
 
   const ageNum = Number.parseInt(ageInput, 10);
   const ageValid = isValidTravelerAge(ageNum);
@@ -73,12 +81,13 @@ export function BookingForm() {
   const step1Valid =
     Boolean(batchKey) &&
     Boolean(pickupKey) &&
+    travelerCount !== null &&
     travelerCount >= 1 &&
     travelerCount <= 50;
   const canPay = step0Valid && step1Valid && termsAccepted && !paying;
 
   const startPayment = useCallback(async () => {
-    if (!canPay) return;
+    if (!canPay || travelerCount === null) return;
     setPaying(true);
     setError(null);
     setMessage(null);
@@ -138,8 +147,9 @@ export function BookingForm() {
         amount: String(amount),
         currency,
         order_id: orderId,
-        name: "Divya Kashi Yatra",
-        description: `Advance — ${travelerCount} traveler(s)`,
+        // Shown on Razorpay modal header; UPI QR payee text still follows Razorpay/KYC business name (see .env.example).
+        name: "WanderMate",
+        description: `Divya Kashi Yatra — advance (${travelerCount} traveler${travelerCount > 1 ? "s" : ""})`,
         theme: { color: "#001533" },
         prefill: {
           name: fullName.trim(),
@@ -380,9 +390,18 @@ export function BookingForm() {
               type="number"
               min={1}
               max={50}
+              inputMode="numeric"
               className="input-luxury mt-2"
-              value={travelerCount}
-              onChange={(e) => setTravelerCount(Math.max(1, Math.min(50, Number(e.target.value) || 1)))}
+              value={travelerCountInput}
+              onChange={(e) => setTravelerCountInput(e.target.value)}
+              onBlur={() => {
+                const n = Number.parseInt(travelerCountInput.trim(), 10);
+                if (!Number.isFinite(n) || n < 1 || n > 50) {
+                  setTravelerCountInput("1");
+                } else {
+                  setTravelerCountInput(String(n));
+                }
+              }}
               required
             />
           </div>
@@ -467,7 +486,9 @@ export function BookingForm() {
               </div>
               <div>
                 <dt className="text-[var(--muted)]">Travelers</dt>
-                <dd className="font-medium text-[var(--foreground)]">{travelerCount}</dd>
+                <dd className="font-medium text-[var(--foreground)]">
+                  {travelerCount !== null ? travelerCount : "—"}
+                </dd>
               </div>
               <div>
                 <dt className="text-[var(--muted)]">Pickup</dt>
