@@ -1,4 +1,5 @@
 import { BookingForm } from "@/components/BookingForm";
+import { DesktopFloatingBookCTA } from "@/components/DesktopFloatingBookCTA";
 import { HomeShell } from "@/components/home/HomeShell";
 import { MobileStickyCTA } from "@/components/MobileStickyCTA";
 import { TripHeroImage } from "@/components/TripHeroImage";
@@ -41,6 +42,7 @@ export default function Home() {
         </Reveal>
       </HomeShell>
       <MobileStickyCTA />
+      <DesktopFloatingBookCTA />
     </main>
   );
 }

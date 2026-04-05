@@ -38,6 +38,15 @@ function createOrderErrorResponse(e: unknown) {
   }
 
   if (e instanceof Prisma.PrismaClientKnownRequestError) {
+    if (e.code === "P1011") {
+      return NextResponse.json(
+        {
+          error:
+            "Secure connection to the database failed (TLS). Use Supabase Transaction pooler URL with sslmode=require. Redeploy the latest app build. If it still fails, set Vercel env DATABASE_SSL_REJECT_UNAUTHORIZED=false only as a temporary workaround, then contact Supabase support.",
+        },
+        { status: 503 },
+      );
+    }
     if (["P1000", "P1001", "P1002", "P1003", "P1010", "P1017"].includes(e.code)) {
       return NextResponse.json(
         {
