@@ -78,7 +78,14 @@ function poolConfigForDatabaseUrl(urlString: string): PoolConfig {
   }
 
   const supabase = isSupabaseHost(hostname);
-  const verifyTls = process.env.DATABASE_SSL_REJECT_UNAUTHORIZED !== "false";
+  /**
+   * Vercel + node-pg + Supabase pooler often hits Prisma P1011 with strict TLS
+   * (`rejectUnauthorized: true`). Connection is still encrypted; this only skips CA chain
+   * verification. Opt into strict mode: DATABASE_SSL_REJECT_UNAUTHORIZED=true
+   */
+  const strictTls =
+    process.env.DATABASE_SSL_REJECT_UNAUTHORIZED === "true" ||
+    process.env.DATABASE_SSL_REJECT_UNAUTHORIZED === "1";
 
   return {
     connectionString,
@@ -88,7 +95,7 @@ function poolConfigForDatabaseUrl(urlString: string): PoolConfig {
     allowExitOnIdle: true,
     ...(supabase
       ? {
-          ssl: verifyTls ? { rejectUnauthorized: true } : { rejectUnauthorized: false },
+          ssl: { rejectUnauthorized: strictTls },
         }
       : {}),
   };

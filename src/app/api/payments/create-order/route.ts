@@ -42,7 +42,7 @@ function createOrderErrorResponse(e: unknown) {
       return NextResponse.json(
         {
           error:
-            "Secure connection to the database failed (TLS). Use Supabase Transaction pooler URL with sslmode=require. Redeploy the latest app build. If it still fails, set Vercel env DATABASE_SSL_REJECT_UNAUTHORIZED=false only as a temporary workaround, then contact Supabase support.",
+            "Secure connection to the database failed (TLS / P1011). Confirm DATABASE_URL is Supabase Transaction pooler :6543 with sslmode=require, redeploy the latest build, and check Vercel logs. If you set DATABASE_SSL_REJECT_UNAUTHORIZED=true, try removing it or contact Supabase support.",
         },
         { status: 503 },
       );
