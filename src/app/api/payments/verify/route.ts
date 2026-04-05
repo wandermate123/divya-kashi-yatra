@@ -23,9 +23,23 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Missing payment verification fields." }, { status: 400 });
     }
 
-    const valid = verifyPaymentSignature(orderId, paymentId, signature);
+    let valid: boolean;
+    try {
+      valid = verifyPaymentSignature(orderId, paymentId, signature);
+    } catch {
+      return NextResponse.json(
+        { error: "Payment verification is not configured (missing RAZORPAY_KEY_SECRET)." },
+        { status: 503 },
+      );
+    }
     if (!valid) {
-      return NextResponse.json({ error: "Invalid payment signature." }, { status: 400 });
+      return NextResponse.json(
+        {
+          error:
+            "Invalid payment signature. Confirm RAZORPAY_KEY_SECRET matches the key used for RAZORPAY_KEY_ID (same test/live mode as the dashboard).",
+        },
+        { status: 400 },
+      );
     }
 
     const result = await confirmAdvancePaid({

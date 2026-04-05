@@ -59,6 +59,23 @@ export const PICKUP_OPTIONS = [
 
 export type PickupKey = (typeof PICKUP_OPTIONS)[number]["key"];
 
+export const GENDER_OPTIONS = [
+  { key: "female", label: "Female" },
+  { key: "male", label: "Male" },
+  { key: "other", label: "Other" },
+  { key: "prefer_not_to_say", label: "Prefer not to say" },
+] as const;
+
+export type GenderKey = (typeof GENDER_OPTIONS)[number]["key"];
+
+export function getGenderByKey(key: string) {
+  return GENDER_OPTIONS.find((g) => g.key === key);
+}
+
+export function isValidTravelerAge(age: number) {
+  return Number.isInteger(age) && age >= 1 && age <= 120;
+}
+
 export function getBatchByKey(key: string) {
   return BATCH_OPTIONS.find((b) => b.key === key);
 }

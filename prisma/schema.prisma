@@ -3,8 +3,13 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  /// App / Prisma Client. Supabase: Transaction pooler :6543 + ?pgbouncer=true
+  url       = env("DATABASE_URL")
+  /// Migrations need advisory locks. Supabase: use direct db.<ref>.supabase.co:5432
+  /// (not *.pooler.supabase.com) if pooler :5432 still gives P1002.
+  /// Local / Neon: same string as DATABASE_URL.
+  directUrl = env("DIRECT_URL")
 }
 
 /// Reservation for Divya Kashi Yatra — advance payment recorded after verified Razorpay payment.
@@ -16,6 +21,13 @@ model Booking {
   fullName      String
   email         String
   phone         String
+  /// Age in years (primary traveler / person placing booking).
+  age    Int
+  /// One of: female | male | other | prefer_not_to_say
+  gender String
+  /// Accepting terms & conditions at submission (required to book).
+  termsAccepted Boolean @default(false)
+
   /// Optional; reserved if you add ID collection later (e.g. after booking).
   idDocumentUrl String?
 

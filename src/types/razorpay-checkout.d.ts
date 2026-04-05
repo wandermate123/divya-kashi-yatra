@@ -6,7 +6,8 @@ export type RazorpaySuccessResponse = {
 
 type RazorpayConstructorOptions = {
   key: string;
-  amount: number;
+  /** INR paise / subunits; string recommended with Orders API */
+  amount: number | string;
   currency: string;
   order_id: string;
   name: string;

@@ -2,10 +2,12 @@
 
 import {
   BATCH_OPTIONS,
+  GENDER_OPTIONS,
   PICKUP_OPTIONS,
   computeAmounts,
   isValidEmail,
   isValidIndianPhone,
+  isValidTravelerAge,
 } from "@/lib/booking";
 import type { RazorpaySuccessResponse } from "@/types/razorpay-checkout";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
@@ -46,6 +48,9 @@ export function BookingForm() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [ageInput, setAgeInput] = useState("");
+  const [genderKey, setGenderKey] = useState("");
+  const [termsAccepted, setTermsAccepted] = useState(false);
   const [travelerCount, setTravelerCount] = useState(1);
   const [batchKey, setBatchKey] = useState("");
   const [pickupKey, setPickupKey] = useState("");
@@ -56,14 +61,21 @@ export function BookingForm() {
 
   const amounts = useMemo(() => computeAmounts(travelerCount), [travelerCount]);
 
+  const ageNum = Number.parseInt(ageInput, 10);
+  const ageValid = isValidTravelerAge(ageNum);
+
   const step0Valid =
-    fullName.trim().length >= 2 && isValidEmail(email.trim()) && isValidIndianPhone(phone.trim());
+    fullName.trim().length >= 2 &&
+    isValidEmail(email.trim()) &&
+    isValidIndianPhone(phone.trim()) &&
+    ageValid &&
+    Boolean(genderKey);
   const step1Valid =
     Boolean(batchKey) &&
     Boolean(pickupKey) &&
     travelerCount >= 1 &&
     travelerCount <= 50;
-  const canPay = step0Valid && step1Valid && !paying;
+  const canPay = step0Valid && step1Valid && termsAccepted && !paying;
 
   const startPayment = useCallback(async () => {
     if (!canPay) return;
@@ -85,6 +97,9 @@ export function BookingForm() {
           fullName: fullName.trim(),
           email: email.trim(),
           phone: phone.trim(),
+          age: ageNum,
+          gender: genderKey,
+          termsAccepted: true,
           travelerCount,
           batchKey,
           pickupKey,
@@ -117,9 +132,10 @@ export function BookingForm() {
         return;
       }
 
+      // Razorpay Standard Checkout expects amount in subunits as string when using orders.
       const rzp = new window.Razorpay({
         key: keyId,
-        amount,
+        amount: String(amount),
         currency,
         order_id: orderId,
         name: "Divya Kashi Yatra",
@@ -166,7 +182,7 @@ export function BookingForm() {
       setError("Something went wrong starting checkout.");
       setPaying(false);
     }
-  }, [batchKey, canPay, email, fullName, phone, pickupKey, travelerCount]);
+  }, [ageNum, batchKey, canPay, email, fullName, genderKey, phone, pickupKey, travelerCount]);
 
   if (successBookingId) {
     return (
@@ -275,6 +291,44 @@ export function BookingForm() {
               autoComplete="tel"
               required
             />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-[var(--muted)]" htmlFor="age">
+              Age (years)
+            </label>
+            <input
+              id="age"
+              type="number"
+              min={1}
+              max={120}
+              inputMode="numeric"
+              className="input-luxury mt-2"
+              value={ageInput}
+              onChange={(e) => setAgeInput(e.target.value)}
+              required
+            />
+            {ageInput && !ageValid ? (
+              <p className="mt-1 text-xs text-amber-200/90">Enter an age between 1 and 120.</p>
+            ) : null}
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-[var(--muted)]" htmlFor="gender">
+              Gender
+            </label>
+            <select
+              id="gender"
+              className="input-luxury mt-2"
+              value={genderKey}
+              onChange={(e) => setGenderKey(e.target.value)}
+              required
+            >
+              <option value="">Select</option>
+              {GENDER_OPTIONS.map((g) => (
+                <option key={g.key} value={g.key}>
+                  {g.label}
+                </option>
+              ))}
+            </select>
           </div>
           <div className="sm:col-span-2 flex flex-col gap-3 pt-2 sm:flex-row sm:justify-end">
             <button
@@ -396,6 +450,16 @@ export function BookingForm() {
                 <dd className="text-[var(--foreground)]">{phone}</dd>
               </div>
               <div>
+                <dt className="text-[var(--muted)]">Age</dt>
+                <dd className="font-medium text-[var(--foreground)]">{ageValid ? ageNum : "—"}</dd>
+              </div>
+              <div>
+                <dt className="text-[var(--muted)]">Gender</dt>
+                <dd className="font-medium text-[var(--foreground)]">
+                  {GENDER_OPTIONS.find((g) => g.key === genderKey)?.label ?? "—"}
+                </dd>
+              </div>
+              <div>
                 <dt className="text-[var(--muted)]">Batch</dt>
                 <dd className="font-medium text-[var(--foreground)]">
                   {BATCH_OPTIONS.find((b) => b.key === batchKey)?.label ?? "—"}
@@ -426,6 +490,23 @@ export function BookingForm() {
                 <span>{formatINRFromPaise(amounts.balancePaise)}</span>
               </div>
             </div>
+          </div>
+          <div className="rounded-sm border border-[var(--border)] bg-[var(--background-mid)]/40 px-4 py-3">
+            <label className="flex cursor-pointer gap-3 text-sm leading-snug text-[var(--foreground)]">
+              <input
+                type="checkbox"
+                className="mt-0.5 h-4 w-4 shrink-0 rounded border-[var(--border)] accent-[var(--accent-strong)]"
+                checked={termsAccepted}
+                onChange={(e) => setTermsAccepted(e.target.checked)}
+              />
+              <span>
+                I have read and accept the{" "}
+                <a href="#terms-heading" className="font-medium text-[var(--accent)] underline-offset-2 hover:underline">
+                  terms &amp; conditions
+                </a>
+                .
+              </span>
+            </label>
           </div>
           <div className="flex flex-col-reverse gap-3 sm:flex-row sm:flex-wrap sm:justify-between">
             <button

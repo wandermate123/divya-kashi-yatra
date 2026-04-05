@@ -1,13 +1,16 @@
 import crypto from "crypto";
 import Razorpay from "razorpay";
 
+/** HMAC SHA256 hex of `{order_id}|{payment_id}` using API Key Secret (not webhook secret). */
 export function verifyPaymentSignature(orderId: string, paymentId: string, signature: string) {
   const secret = process.env.RAZORPAY_KEY_SECRET;
   if (!secret) throw new Error("Missing RAZORPAY_KEY_SECRET");
   const body = `${orderId}|${paymentId}`;
-  const expected = crypto.createHmac("sha256", secret).update(body).digest("hex");
+  const expected = crypto.createHmac("sha256", secret).update(body).digest("hex").toLowerCase();
+  const sig = signature.trim().toLowerCase();
+  if (!/^[0-9a-f]+$/.test(sig) || sig.length !== expected.length) return false;
   try {
-    return crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(signature));
+    return crypto.timingSafeEqual(Buffer.from(sig, "hex"), Buffer.from(expected, "hex"));
   } catch {
     return false;
   }
