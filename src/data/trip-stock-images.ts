@@ -1,4 +1,4 @@
-/** Trip imagery — hero and accommodation use local assets; gallery and traveller section use remote URLs. */
+/** Trip imagery — hero, accommodation, and tempo traveller use local assets; gallery uses remote URLs. */
 
 export type TripStockImage = {
   src: string;
@@ -20,10 +20,10 @@ export const ACCOMMODATION_STOCK_IMAGE: TripStockImage = {
   label: "Premium 3★ / 4★ style stay in Varanasi",
 };
 
-/** Comfortable group road transfer — representative AC tourist coach / traveller class. */
+/** Delhi ↔ Varanasi leg — premium AC tempo traveller interior our groups use. */
 export const LUXURY_TRAVELLER_STOCK_IMAGE: TripStockImage = {
-  src: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=1600&q=85",
-  alt: "Modern air-conditioned coach for group travel",
+  src: "/images/tempo-traveller-primary.png",
+  alt: "Premium AC tempo traveller interior: beige quilted seats, wood-trim armrests, red aisle carpet, and large side windows",
   label: "Delhi NCR ↔ Varanasi road transfer",
 };
 

@@ -277,8 +277,7 @@ export function TripDetails() {
             />
           </div>
           <figcaption className="px-4 py-3 text-xs text-[var(--muted)] sm:px-8">
-            {ACCOMMODATION_STOCK_IMAGE.label} · Representative room; properties named below are the actual options we work
-            with.
+            {ACCOMMODATION_STOCK_IMAGE.label}
           </figcaption>
         </figure>
         <SectionTitle id="accommodation-heading">Accommodation</SectionTitle>
