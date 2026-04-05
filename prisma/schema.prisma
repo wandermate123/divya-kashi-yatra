@@ -3,13 +3,10 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  /// App / Prisma Client. Supabase: Transaction pooler :6543 + ?pgbouncer=true
-  url       = env("DATABASE_URL")
-  /// Migrations need advisory locks. Supabase: use direct db.<ref>.supabase.co:5432
-  /// (not *.pooler.supabase.com) if pooler :5432 still gives P1002.
-  /// Local / Neon: same string as DATABASE_URL.
-  directUrl = env("DIRECT_URL")
+  provider = "postgresql"
+  /// Supabase on Vercel: Transaction pooler :6543 + ?pgbouncer=true&sslmode=require (and often connection_limit=1).
+  /// Run `prisma migrate deploy` locally using a session/direct URL when the pooler cannot take advisory locks.
+  url      = env("DATABASE_URL")
 }
 
 /// Reservation for Divya Kashi Yatra — advance payment recorded after verified Razorpay payment.

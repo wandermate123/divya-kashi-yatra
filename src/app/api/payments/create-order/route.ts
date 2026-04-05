@@ -26,7 +26,7 @@ function createOrderErrorResponse(e: unknown) {
       return NextResponse.json(
         {
           error:
-            "Cannot reach the database. Check DATABASE_URL / DIRECT_URL on the server (and SSL / IP allowlists).",
+            "Cannot reach the database. Check DATABASE_URL on the server (SSL, pooler host, no typos or stray spaces).",
         },
         { status: 503 },
       );
@@ -49,7 +49,7 @@ function createOrderErrorResponse(e: unknown) {
     return NextResponse.json(
       {
         error:
-          "Database connection failed. Supabase: DATABASE_URL = :6543 + ?pgbouncer=true; DIRECT_URL = :5432 session pooler (same host). Local: set both to the same URL.",
+          "Database connection failed. In Vercel → Settings → Environment Variables, set DATABASE_URL to your Supabase Transaction pool URI (port 6543). It must include ?pgbouncer=true and usually &sslmode=require. URL-encode special characters in the password. Example ending: …pooler.supabase.com:6543/postgres?pgbouncer=true&sslmode=require&connect_timeout=30",
       },
       { status: 503 },
     );
